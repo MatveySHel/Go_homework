@@ -231,7 +231,7 @@ func ProccessQuiry(lib_pointer *Library, k *int, parsed map[string]string){
 }
 
 // Точка входа в программу
-func library() {
+func LibraryLaunch() {
 	fmt.Print(">Type following commands:(\n" +
 		"  search_book: <author> '<title>',\n" +
 		"  add_book: <author> '<title>',\n" +
