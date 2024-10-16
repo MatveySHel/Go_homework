@@ -1,18 +1,17 @@
 package app
 
 import (
-	"library/internal/utils"
-	"library/internal/storage_map"
-	"library/internal/storage_slice"
+	"library/internal/objects"
+	"library/internal/collections"
 
 )
 
 // Функция для обнавления хранилища
-func SetUp_storage(arg string) utils.Library {
+func SetUp_storage(arg string) objects.Storage {
     if arg == "map" {
-        return &storage_map.Storage_map{}
+        return &collections.Storage_map{}
     } else if arg == "slice" {
-        return &storage_slice.Storage_slice{}
+        return &collections.Storage_slice{}
     }
     return nil
 }

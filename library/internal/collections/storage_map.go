@@ -1,39 +1,39 @@
-package storage_map
+package collections
 
 import (
-	"library/internal/utils"
 	"fmt"
+	"library/internal/objects"
 )
 
-type Storage_map map[string]utils.Book
+
+type Storage_map map[string]objects.Book
 
 //Метод для *Storage_map для поиска книги в структуре
-func (s *Storage_map) Search(k *int, title, author string) (int, string, bool) {
-	id := utils.Calc_id(k, fmt.Sprintf("%v_%v", title, author))
+func (s *Storage_map) Search(id string) (int,  bool) {
 	_, key := (*s)[id]
-	return -1, id, key
+	return -1, key
 }
 
 //Метод для *Storage_map для добавления книги в структуру
-func (s *Storage_map) AddBook(k *int,title, author string){
+func (s *Storage_map) AddBook(title, author, id string){
 
-	if _, id, exsists := s.Search(k ,title, author); exsists {
+	if _, key := (*s)[id]; key {
 		book := (*s)[id]
 		book.Amount++
 		(*s)[id] = book
 	} else {
-		(*s)[id] = utils.Book{Id: id, Title: title, Author: author, Amount: 1}
+		(*s)[id] = objects.Book{Id: id, Title: title, Author: author, Amount: 1}
 	}
 }
 
 //Метод для *Storage_map для удаления книги из хранилища
-func (s *Storage_map) RemoveBook(k *int,title, author string) bool {
-	if _, id, exsists := s.Search(k, title, author); exsists {
+func (s *Storage_map) RemoveBook(id string) bool {
+	if _, key := (*s)[id]; key {
 		book := (*s)[id]
 		book.Amount--
 		(*s)[id] = book
 		if book.Amount == 0 {
-			delete(*s, id)
+			delete((*s), id)
 		}
 		return true
 	}
@@ -41,14 +41,14 @@ func (s *Storage_map) RemoveBook(k *int,title, author string) bool {
 }
 
 //Метод для *Storage_map, который обновлет id у книг в хранилище
-func (s *Storage_map) RenewId(k *int){
+func (s *Storage_map) RenewId(id_func func(string,string)string){
 	keys := make([]string, 0, len(*s))
 	for key := range *s{
 		keys = append(keys, key)
 	}
 	for _ ,key := range keys{
 		book := (*s)[key]
-		book.Id = utils.Calc_id(k , fmt.Sprintf("%v_%v", book.Title, book.Author))
+		book.Id = id_func(book.Title, book.Author)
 		(*s)[book.Id] = book
 		delete(*s, key)
 	}
@@ -57,7 +57,7 @@ func (s *Storage_map) RenewId(k *int){
 // Метод для *Storage_map для вывода содержимого хранилища на экран в stdout
 func (s *Storage_map) ShowContainer(){
 	fmt.Print("library(map): { ")
-	for _,v := range *s{
+	for _,v := range (*s){
 		fmt.Print(v," ")
 	}
 	fmt.Print("}\n\n")
